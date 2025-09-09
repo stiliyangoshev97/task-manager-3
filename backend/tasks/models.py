@@ -12,6 +12,7 @@ class Task(models.Model):
     # Whether the task is completed
     completed = models.BooleanField(default=False)
     # Reference to the user who owns the task
+    # related_name allows reverse access from User to their tasks using user.tasks.all()
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tasks')
     # Timestamp when the task was created
     created_at = models.DateTimeField(auto_now_add=True)

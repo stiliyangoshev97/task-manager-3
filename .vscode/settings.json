@@ -1,8 +1,11 @@
 {
-    "python.analysis.extraPaths": [
-      "./backend",
-      "./backend/accounts",
-      "./backend/tasks",
-      "./backend/config"
-    ]
+  "python.analysis.extraPaths": [
+    "./backend",
+    "./backend/accounts",
+    "./backend/tasks",
+    "./backend/config"
+  ],
+  "python.analysis.diagnosticSeverityOverrides": {
+      "reportMissingImports": "none"
   }
+}
