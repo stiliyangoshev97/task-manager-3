@@ -1,0 +1,110 @@
+# Django + React Task Manager - Technical Details
+
+---
+## Backend (Django)
+
+### Structure
+- `accounts/` app: Handles registration, login, JWT authentication
+- `tasks/` app: Handles CRUD for tasks
+- `config/`: Django project settings and URLs
+- Uses SQLite by default
+
+### Key Files
+- `accounts/views.py`: Registration and login logic
+- `tasks/views.py`: Task CRUD logic
+- `config/settings.py`: App configuration, CORS, REST framework, JWT
+- `config/urls.py`: API routing
+
+### API Endpoints
+- `/api/auth/register/` (POST): Register new user
+- `/api/auth/login/` (POST): Obtain JWT token
+- `/api/auth/refresh/` (POST): Refresh JWT token
+- `/api/tasks/` (GET, POST): List/create tasks
+- `/api/tasks/<id>/` (GET, PUT, DELETE): Retrieve/update/delete task
+
+### Authentication
+- Uses JWT (`access` token) for all protected endpoints
+- Token sent in `Authorization: Bearer <token>` header
+
+### CORS
+- Enabled for all origins in `settings.py` for local development
+
+---
+## Frontend (React)
+
+### Structure
+- `src/features/auth/`: Registration, login, auth API
+- `src/features/taskManager/`: Dashboard, task CRUD, task API
+- `src/context/AuthContext.jsx`: Global auth state
+- `.env`: Set `VITE_API_URL` to backend URL
+
+### API Integration
+- All API calls use the base URL from `.env`
+- Endpoints have trailing slashes (required by Django)
+- After login, JWT `access` token is stored in localStorage and used for all requests
+
+### Error Handling
+- Registration and login errors are displayed to the user
+- Duplicate username/email errors are shown clearly
+- Task CRUD errors are handled and shown in the UI
+
+---
+## Setup Steps (Quick Reference)
+
+### Backend
+1. `cd backend`
+2. `python3 -m venv venv && source venv/bin/activate`
+3. `pip install django djangorestframework djangorestframework-simplejwt django-cors-headers`
+4. `python3 manage.py makemigrations && python3 manage.py migrate`
+5. `python3 manage.py runserver`
+
+### Frontend
+1. `cd frontend`
+2. `npm install`
+3. Create `.env` with `VITE_API_URL=http://localhost:8000`
+4. `npm run dev`
+
+---
+## How It Works
+- Frontend sends requests to Django backend using fetch/axios
+- JWT token is used for authentication
+- CORS allows frontend to communicate with backend
+- All endpoints and data formats are compatible with Django REST Framework
+
+---
+## Migration from Express (MERN)
+- Backend logic moved from Express controllers/routes to Django apps/views
+- Authentication now uses Django's built-in user model and JWT
+- Task model and CRUD logic ported to Django ORM
+- API endpoints and frontend integration updated for Django
+
+---
+## Deployment Instructions
+
+### Backend (Django)
+1. Set `DEBUG = False` in `config/settings.py` and configure `ALLOWED_HOSTS` for your domain.
+2. Use a production server like Gunicorn or uWSGI with Nginx or Apache.
+3. Set up a production database (e.g., PostgreSQL) if needed.
+4. Collect static files:
+   ```zsh
+   python3 manage.py collectstatic
+   ```
+5. Secure your secret key and environment variables.
+
+### Frontend (React)
+1. Build the frontend for production:
+   ```zsh
+   npm run build
+   ```
+2. Serve the build output (`frontend/dist`) with a static file server or integrate with Django using WhiteNoise or similar.
+3. Update `VITE_API_URL` in `.env` to your production backend URL.
+
+### General
+- Use HTTPS in production.
+- Set up environment variables securely.
+- For full-stack deployment, consider platforms like Heroku, Vercel, or DigitalOcean.
+
+---
+## For More Info
+- See README.md for a beginner-friendly guide
+- This file covers technical details, deployment, and quick reference for developers

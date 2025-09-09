@@ -1,0 +1,25 @@
+# Node modules
+node_modules/
+
+# Build output
+frontend/dist/
+
+# Python virtual environment
+backend/venv/
+
+# Django database
+backend/db.sqlite3
+
+# Django cache and pyc files
+**/__pycache__/
+*.pyc
+
+# Environment variables
+frontend/.env
+backend/.env
+
+# OS files
+.DS_Store
+
+# Misc
+*.log
