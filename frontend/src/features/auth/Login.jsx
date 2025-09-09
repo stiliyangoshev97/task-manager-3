@@ -3,23 +3,36 @@ import { login as loginApi } from './authApi.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useNavigate } from 'react-router-dom';
 
-export default function Login() {
-  const [form, setForm] = useState({ username: '', password: '' });
-  const [error, setError] = useState('');
-  const { login } = useAuth();
-  const navigate = useNavigate();
+// Login.jsx - User login form
+// This component allows users to log in with their credentials (username/email and password).
+// It manages form state, error messages, and handles authentication.
+// On successful login, it stores the JWT token and redirects to the dashboard.
+//
+// Key concepts:
+// - useState for form fields and error handling
+// - useContext to access AuthContext for authentication
+// - useNavigate for page redirection
+// - Calls loginUser from authApi.js to send login data to backend
 
+export default function Login() {
+  const [form, setForm] = useState({ username: '', password: '' }); // State to manage form inputs
+  const [error, setError] = useState(''); // State to manage error messages
+  const { login } = useAuth(); // Access login function from AuthContext
+  const navigate = useNavigate(); // Hook to navigate to different routes
+
+  // Update form state when input fields change
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
+  // Handle form submission
   const handleSubmit = async e => {
-    e.preventDefault();
-    setError('');
-    const res = await loginApi(form);
+    e.preventDefault(); // Prevent default form submission behavior
+    setError(''); // Clear any previous error messages
+    const res = await loginApi(form); // Call API to authenticate user
     if (res.access) {
       login({ username: form.username }, res.access); // Store username and access token
-      navigate('/dashboard');
+      navigate('/dashboard'); // Redirect to dashboard on successful login
     } else {
-      setError(res.detail || res.message || 'Login failed');
+      setError(res.detail || res.message || 'Login failed'); // Display error message
     }
   };
 

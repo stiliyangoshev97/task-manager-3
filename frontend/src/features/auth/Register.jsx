@@ -3,18 +3,30 @@ import { register } from './authApi.js';
 import { useAuth } from '../../context/AuthContext.jsx';
 import { useNavigate } from 'react-router-dom';
 
-export default function Register() {
-  const [form, setForm] = useState({ username: '', email: '', password: '' });
-  const [error, setError] = useState('');
-  const { login } = useAuth();
-  const navigate = useNavigate();
+// Register.jsx - User registration form for new accounts
+// This component lets users sign up by entering a username, email, and password.
+// It handles form state, validation, and displays error messages from the backend.
+// On successful registration, it redirects to the login page.
+//
+// Key concepts:
+// - useState for form fields and error handling
+// - useNavigate for page redirection
+// - Calls registerUser from authApi.js to send data to backend
 
+export default function Register() {
+  const [form, setForm] = useState({ username: '', email: '', password: '' }); // State for form fields
+  const [error, setError] = useState(''); // State for error messages
+  const { login } = useAuth(); // Access login function from AuthContext
+  const navigate = useNavigate(); // Hook for navigation
+
+  // Update form state when input fields change
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
+  // Handle form submission
   const handleSubmit = async e => {
-    e.preventDefault();
-    setError('');
-    const res = await register(form);
+    e.preventDefault(); // Prevent default form submission behavior
+    setError(''); // Clear previous error messages
+    const res = await register(form); // Call register function to send data to backend
     if (res.message === 'User registered successfully') {
       // Auto-login after register
       const loginRes = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/login/`, {
@@ -24,10 +36,10 @@ export default function Register() {
       });
       const loginData = await loginRes.json();
       if (loginData.access) {
-        login({ username: form.username }, loginData.access);
-        navigate('/dashboard');
+        login({ username: form.username }, loginData.access); // Save login data in context
+        navigate('/dashboard'); // Redirect to dashboard
       } else {
-        setError(loginData.detail || loginData.message || 'Login failed after registration');
+        setError(loginData.detail || loginData.message || 'Login failed after registration'); // Handle login error
       }
     } else {
       // Log full response for debugging

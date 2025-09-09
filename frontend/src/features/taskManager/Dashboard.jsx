@@ -4,6 +4,16 @@ import { useAuth } from '../../context/AuthContext.jsx';
 import TaskItem from './TaskItem.jsx';
 import TaskForm from './TaskForm.jsx';
 
+// Dashboard.jsx - Main page for managing tasks
+// This component displays the user's tasks and provides options to add, edit, or delete tasks.
+// It fetches tasks from the backend using the JWT token for authentication.
+//
+// Key concepts:
+// - useState for managing tasks and loading/error states
+// - useEffect to fetch tasks when the component loads
+// - Uses TaskItem and TaskForm components for task display and editing
+// - Calls getTasks, createTask, updateTask, deleteTask from taskApi.js
+
 // Dashboard.jsx - Main dashboard for tasks
 // Displays and manages user tasks
 export default function Dashboard() {
@@ -12,50 +22,55 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  // Fetches tasks from the backend when the component loads
   const fetchTasks = async () => {
     setLoading(true);
     setError('');
-    const token = localStorage.getItem('token');
-    const res = await getTasks(token);
+    const token = localStorage.getItem('token'); // Retrieve JWT token from local storage
+    const res = await getTasks(token); // Fetch tasks using the token
     if (Array.isArray(res)) {
-      setTasks(res);
+      setTasks(res); // Update tasks state if the response is an array
     } else {
-      setError(res.message || 'Failed to fetch tasks');
+      setError(res.message || 'Failed to fetch tasks'); // Set error message if fetching fails
     }
     setLoading(false);
   };
 
+  // useEffect hook to fetch tasks when the component is mounted
   useEffect(() => {
     fetchTasks();
   }, []);
 
+  // Handles adding a new task
   const handleAdd = async (data) => {
-    const token = localStorage.getItem('token');
-    const res = await addTask(data, token);
+    const token = localStorage.getItem('token'); // Retrieve JWT token from local storage
+    const res = await addTask(data, token); // Add a new task using the token
     if (res.id) {
-      setTasks([res, ...tasks]);
+      setTasks([res, ...tasks]); // Add the new task to the tasks state
     } else {
-      setError(res.message || 'Failed to add task');
+      setError(res.message || 'Failed to add task'); // Set error message if adding fails
     }
   };
 
+  // Handles updating an existing task
   const handleUpdate = async (id, data) => {
-    const token = localStorage.getItem('token');
-    const res = await updateTask(id, data, token);
+    const token = localStorage.getItem('token'); // Retrieve JWT token from local storage
+    const res = await updateTask(id, data, token); // Update the task using the token
     if (res.id) {
-      setTasks(tasks.map(t => t.id === id ? res : t));
+      setTasks(tasks.map(t => t.id === id ? res : t)); // Update the task in the tasks state
     } else {
-      setError(res.message || 'Failed to update task');
+      setError(res.message || 'Failed to update task'); // Set error message if updating fails
     }
   };
 
+  // Handles deleting a task
   const handleDelete = async (id) => {
-    const token = localStorage.getItem('token');
-    const res = await deleteTask(id, token);
+    const token = localStorage.getItem('token'); // Retrieve JWT token from local storage
+    const res = await deleteTask(id, token); // Delete the task using the token
     if (res.message === 'Task deleted') {
-      setTasks(tasks.filter(t => t.id !== id));
+      setTasks(tasks.filter(t => t.id !== id)); // Remove the task from the tasks state
     } else {
-      setError(res.message || 'Failed to delete task');
+      setError(res.message || 'Failed to delete task'); // Set error message if deleting fails
     }
   };
 
